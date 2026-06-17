@@ -1,0 +1,6 @@
+pandapower==3.4.0
+numpy>=1.26,<2.4
+scipy<1.17
+pandas~=2.3
+matplotlib>=3.7
+pytest>=7.0
