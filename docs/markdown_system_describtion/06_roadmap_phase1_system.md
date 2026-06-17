@@ -1,15 +1,5 @@
 # 06 — Roadmap: Where the Safety-Aware Phases Attach
 
-> **Status update (Phase 1 shipped).** This chapter was written *before* Phase 1 and predicted it would
-> deliver DQL + a physical safety cost $S_c$ + objective $J = pa + \lambda S_c$. **What actually shipped in
-> Phase 1** ([docs 08–12](08_phase1_overview.md)) is the **five-action decision function** ✓ (deterministic
-> `select_action`, not DQL), **soft/graded actions** ✓ (the five-action $\delta$ table in `config.py`), and
-> **operational metrics** ✓ — realized as **M1–M7**, where **M7** (state-estimation observability cost) is the
-> independent safety axis *instead of* a line-flow/voltage $S_c$. **Still deferred to Phase 2:** **deep
-> Q-learning**, the **physical safety cost $S_c$**, and the **$J = pa + \lambda S_c$** objective
-> (`config.LAMBDA` is a reserved placeholder, unused). The §2 seams below remain the valid Phase 2 plan; read
-> them as forward-looking. See [12 §5](12_phase1_divergences.md) for why this scoping was deliberate.
-
 Phase 0 delivered a **trusted, frozen baseline**: a validated attack/defense model whose bypass probability
 $pa$ and infection level $\bar\rho$ match the paper. The remaining phases turn that baseline into the
 project's real subject — a **safety-aware** zero-trust controller. This chapter maps each future element to a
@@ -17,7 +7,6 @@ concrete seam in the existing code, so the next phases plug in rather than rewri
 
 A guiding principle: **keep Phase 0's six-gate runner as a regression harness.** Every later phase must leave
 Gate A, Gate B, and the 17 unit tests passing, so the baseline never silently drifts as new machinery lands.
-(The 17 are the Phase 0 subset; with the Phase 1/1b additions the full current suite is 58 tests.)
 
 ---
 

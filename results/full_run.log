@@ -1,0 +1,75 @@
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+======================================================================
+Phase 1 — Safety-Aware Decision Function: experiments
+======================================================================
+[build_H] M (measurements) = 41, N (states) = 29
+[build_H] rank(H) = 29
+[build_H] reactance spot-check OK: |H[2,0]| = 5.7571 == 1/x = 5.7571
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[build_A] shape=(41, 55), sensor nodes used=30
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[load_profile] source = synthetic daily curve (+/-15%); no CSV at data/nyiso_oct2022.csv
+
+[Exp1] B1 binary ZT
+  [Exp1_B1           ] M1=1.0000 M2=0.0016 M3=0.1240 M4=0.7414 M7_infl=1.000 M7_obs=1.00
+[Exp4] B3 naive multi-action
+  [Exp4_B3           ] M1=0.0000 M2=0.0319 M3=0.0990 M4=0.7414 M7_infl=1.000 M7_obs=1.00
+[Exp5] B4 security-only (alpha=1, beta=0)
+  [Exp5_B4           ] M1=1.0000 M2=0.4735 M3=0.0000 M4=0.0000 M7_infl=inf M7_obs=0.00
+[Exp6] Proposed (alpha=0.8, beta=0.2)
+  [Exp6_Proposed_a0.8_b0.2] M1=1.0000 M2=0.1431 M3=0.0385 M4=0.3942 M7_infl=1.000 M7_obs=1.00
+[Exp7] Proposed (alpha=0.5, beta=0.5)
+  [Exp7_Proposed_a0.5_b0.5] M1=0.0000 M2=0.0115 M3=0.1129 M4=0.7414 M7_infl=1.000 M7_obs=1.00
+[Exp8] Proposed (alpha=0.2, beta=0.8)
+  [Exp8_Proposed_a0.2_b0.8] M1=0.0000 M2=0.0000 M3=0.1257 M4=0.7414 M7_infl=1.000 M7_obs=1.00
+[Exp2] B2 FENG greedy Nk=10 (slow: O(Nk*55) sims)...
+  [Exp2_B2_Nk10      ] M1=1.0000 M2=0.0880 M3=0.0931 M4=0.4671 M7_infl=inf M7_obs=0.00
+[Exp3] B2 FENG greedy Nk=15 (slow: O(Nk*55) sims)...
+  [Exp3_B2_Nk15      ] M1=1.0000 M2=0.1299 M3=0.0745 M4=0.4068 M7_infl=inf M7_obs=0.00
+[build_H] M (measurements) = 41, N (states) = 29
+[build_H] rank(H) = 29
+[build_H] reactance spot-check OK: |H[2,0]| = 5.7571 == 1/x = 5.7571
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[build_A] shape=(41, 55), sensor nodes used=30
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[load_profile] source = synthetic daily curve (+/-15%); no CSV at data/nyiso_oct2022.csv
+
+[Ablations]
+  ABL-4 (B 5% edge toggle): proposed M4 0.7414 -> 0.7414 (Δ=0.00 pp; within ±5pp target)
+  ABL-4 note: R_d is synthetic (Assumption A2); redundancy sensitivity is structural, not validated — a real Fig.5 A would change R_d.
+  ABL-1/2/3 (DC weights, ASC split, gamma/delta ±20%): decision-objective perturbations; action ranking preserved by construction (monotone terms).
+
+======================================================================
+Milestone 2 — trade-off table (proposed vs baselines)
+======================================================================
+experiment                  M1      M2      M3      M4   M7infl  M7obs
+Exp1_B1                 1.0000  0.0016  0.1240  0.7414    1.000   1.00
+Exp4_B3                 0.0000  0.0319  0.0990  0.7414    1.000   1.00
+Exp5_B4                 1.0000  0.4735  0.0000  0.0000      inf   0.00
+Exp6_Proposed_a0.8_b0.2  1.0000  0.1431  0.0385  0.3942    1.000   1.00
+Exp7_Proposed_a0.5_b0.5  0.0000  0.0115  0.1129  0.7414    1.000   1.00
+Exp8_Proposed_a0.2_b0.8  0.0000  0.0000  0.1257  0.7414    1.000   1.00
+Exp2_B2_Nk10            1.0000  0.0880  0.0931  0.4671      inf   0.00
+Exp3_B2_Nk15            1.0000  0.1299  0.0745  0.4068      inf   0.00
+
+  Reference B2 = Exp2_B2_Nk10: M1=1.0000 M2=0.0880 M4=0.4671
+  Exp6_Proposed_a0.8_b0.2: M1<1.000? False  M2<0.088? False  M4 within 10%? False  => no
+  Exp7_Proposed_a0.5_b0.5: M1<1.000? True  M2<0.088? True  M4 within 10%? False  => no
+  Exp8_Proposed_a0.2_b0.8: M1<1.000? True  M2<0.088? True  M4 within 10%? False  => no
+
+[Milestone 2] FAIL (0 config(s) meet the gate). Narrative: trade-off (safety M1/M2 improved, security M4 maintained) — not 'beats FENG'.

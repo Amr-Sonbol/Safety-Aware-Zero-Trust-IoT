@@ -5,13 +5,9 @@
 
 **Phase 0** has a single job: **faithfully reproduce the paper's cyber-physical attack/defense model and
 validate it against the paper's published numbers.** The deliverable is a *trusted baseline* — every later
-phase is measured against the numbers established here. This documentation set explains that baseline
-end-to-end: the model, the results, the modeling judgments, the code, and where the next phases attach.
-
-> **Phase 1 has shipped.** The safety-aware **five-action decision function** and operational **metrics
-> M1–M7** are built and validated on top of this frozen baseline — see [docs 08–12](08_phase1_overview.md).
-> (Deep Q-learning and a physical safety cost $S_c$ remain deferred to Phase 2; the roadmap [06](06_roadmap_phase1.md)
-> is annotated accordingly.)
+phase (safety cost, deep Q-learning, the five-action decision function, metrics M1/M2/M3) is measured against
+the numbers established here. This documentation set explains that baseline end-to-end: the model, the
+results, the modeling judgments, the code, and where the next phases attach.
 
 ---
 
@@ -26,7 +22,7 @@ All produced by `python run_phase0.py` and reproduced independently by `python d
 | **Gate B** — greedy $pa$, $N_k=10$ | **0.5606** | 0.5291 | $[0.50, 0.58]$ | ✅ |
 | **Gate B** — greedy $pa$, $N_k=15$ | **0.5483** | 0.5094 | $[0.49, 0.57]$ | ✅ |
 | Monotonicity $pa(15)\le pa(10)$ | ✓ | — | required | ✅ |
-| Unit tests (Phase 0 subset) | **17 / 17 pass** | — | all pass | ✅ |
+| Unit tests | **17 / 17 pass** | — | all pass | ✅ |
 
 ![Gate A: pa(t) over the 40-step horizon](figures/pa_vs_step.png)
 
@@ -55,7 +51,7 @@ cd /home/poky/Workspace/Amr/CPS_Safety_Aware
 source .venv/bin/activate
 
 python run_phase0.py                                          # the 6 validation gates (~10-25 min)
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest zt_cps_phase0/tests -p no:cacheprovider -q   # 58 tests
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest zt_cps_phase0/tests -p no:cacheprovider -q   # 17 tests
 python docs/make_figures.py            # regenerate all 3 figures (slow: Gate B sweep)
 python docs/make_figures.py --fast     # just the two Gate A figures (~10 s)
 ```
@@ -78,11 +74,6 @@ Read top-to-bottom as an essay, or jump to what you need:
 | 05 | [Divergences from the paper](05_divergences.md) | the four documented modeling choices + why | integrity / defense |
 | 06 | [Roadmap to Phase 1](06_roadmap_phase1.md) | where DQL / 5-action / safety cost attach | next phases |
 | 07 | [Environment & reproducibility](07_environment_repro.md) | exact env, pins, commands, timings | re-running from scratch |
-| 08 | [Phase 1 overview](08_phase1_overview.md) | the safety-aware layer, headline trade-off, D1/D2/D3 | everyone (Phase 1) |
-| 09 | [Decision model](09_decision_model.md) | profiles, `select_action`, the two D1 channels, single-step trace | technical core (Phase 1) |
-| 10 | [Metrics M1–M7](10_metrics.md) | every metric defined + interpreted; the M7 safety axis | results / examiner |
-| 11 | [Phase 1 results & validation](11_phase1_results.md) | 8 experiments + 4 ablations, Milestone-2 verdict, figures | examiner / results |
-| 12 | [Phase 1 divergences](12_phase1_divergences.md) | the five honest modeling choices | integrity / defense |
 
 ### Study aids — three questions, where each is answered
 

@@ -155,3 +155,67 @@ def build_A(m: int) -> np.ndarray:
         f"[build_A] shape={A.shape}, sensor nodes used={len(np.unique(np.where(A)[1]))}"
     )
     return A
+
+
+def assign_classes() -> dict[int, str]:
+    """Assign each of the 55 cyber nodes one of the five device classes (Phase 1).
+
+    FENG2023 Fig. 5 does not publish a per-node device-class label for all 55
+    nodes (Assumption A1/A5), so the classes are derived **deterministically** from
+    the structure already in the Phase 0 model — the sensor/non-sensor role split
+    encoded by :func:`sensor_nodes`/:func:`build_A` and the node degree in
+    :func:`build_B`:
+
+    * **Non-sensor nodes** (``id >= SENSOR_COUNT``) are the control plane (C-PDP):
+      a high-degree hub (degree >= 4) is ``C-PDP-critical``; otherwise
+      ``C-PDP-controller``.
+    * **Sensor nodes** (``id < SENSOR_COUNT``) are field devices (T-PDP), split by
+      degree tier: degree >= 4 -> ``T-PDP-relay``; degree == 3 -> ``T-PDP-sensor``;
+      degree <= 2 -> ``T-PDP-monitor``.
+
+    With the Fig. 5 ``B`` (55 nodes, 83 edges) this yields all five classes
+    non-empty (critical 8, controller 17, relay 6, sensor 13, monitor 11). This is a
+    documented approximation, not a reading of the figure; it exists so the Phase 1
+    decision model has a SIL / data-criticality profile per node. It does **not**
+    modify ``B`` or ``A``.
+
+    Returns
+    -------
+    dict[int, str]
+        Map from 0-indexed node id to its device-class label (one of
+        :data:`config.DEVICE_CLASSES`).
+
+    Raises
+    ------
+    AssertionError
+        If any node is unlabeled, a label is not a known class, or any of the five
+        classes is empty (which would break the M5 per-class action distribution).
+    """
+    B = build_B()
+    degree = B.sum(axis=1).astype(int)
+    sensors = set(int(i) for i in sensor_nodes())
+
+    classes: dict[int, str] = {}
+    for node in range(config.N_NODES):
+        d = int(degree[node])
+        if node in sensors:
+            if d >= 4:
+                classes[node] = "T-PDP-relay"
+            elif d == 3:
+                classes[node] = "T-PDP-sensor"
+            else:
+                classes[node] = "T-PDP-monitor"
+        else:
+            classes[node] = "C-PDP-critical" if d >= 4 else "C-PDP-controller"
+
+    assert len(classes) == config.N_NODES, (
+        f"assigned {len(classes)} labels != {config.N_NODES} nodes"
+    )
+    assert all(c in config.DEVICE_CLASSES for c in classes.values()), (
+        "assign_classes produced an unknown device-class label"
+    )
+    present = set(classes.values())
+    assert present == set(config.DEVICE_CLASSES), (
+        f"not all five device classes present: missing {set(config.DEVICE_CLASSES) - present}"
+    )
+    return classes

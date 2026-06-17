@@ -3,9 +3,7 @@
 This is the experimental-results chapter. Phase 0's deliverable is a **trusted baseline**: a faithful
 reproduction whose numbers fall inside the bands the paper's reported values define. Validation is layered —
 six runtime gates in `run_phase0.py` and 17 unit tests in `pytest` — so that a structural error fails
-*loudly* (an assertion or an out-of-band gate) rather than silently shifting a result. (These 17 are the
-**Phase 0 subset**; the full current suite is **58 tests** — Phase 0 invariants plus the Phase 1/1b
-additions. The "17" figures in this chapter refer to the Phase 0 regression set as a historical contract.)
+*loudly* (an assertion or an out-of-band gate) rather than silently shifting a result.
 
 All numbers below were produced by `python run_phase0.py` and reproduced independently by
 `python docs/make_figures.py`; the figures' printed series match the runner exactly (the

@@ -1,0 +1,62 @@
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+======================================================================
+Phase 0 — Feng & Hu (2023) Cyber-Physical Attack Model Validation
+pandapower version: 3.4.0
+======================================================================
+
+[Setup] Loading IEEE 30-bus network and building model objects...
+[build_H] M (measurements) = 41, N (states) = 29
+[build_H] rank(H) = 29
+[build_H] reactance spot-check OK: |H[2,0]| = 5.7571 == 1/x = 5.7571
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[build_A] shape=(41, 55), sensor nodes used=30
+[load_profile] source = synthetic daily curve (+/-15%); no CSV at data/nyiso_oct2022.csv
+  Setup completed in 0.8s
+
+[Check 1] Network: total load and slack voltage
+  [PASS] Total load ≈ 283.4 MW — got 283.4 MW
+  [PASS] Slack vm_pu = 1.06 — got 1.0600 p.u.
+
+[Check 2] H matrix: shape, rank, reactance weighting
+  [PASS] H shape (41, 29) with M=41, N=29 — shape = (41, 29)
+  [PASS] H is full column rank (29) — rank = 29
+  [PASS] H entries are reactance-weighted (not ±1 incidence) — max |H| = 42.373
+
+[Check 3] Clean residual ≈ noise floor (z in col-space of H)
+  [PASS] Clean residual ‖z_clean − H K z_clean‖ < 1e-6 — residual = 7.89e-12
+
+[Check 4] Gate A: no-ZTA average bypass probability over 40 steps
+  (B' = B, no defense, 10 000 FDI targets)
+  [PASS] Gate A avg pa ∈ [0.70, 0.80]  (target 0.7474) — achieved 0.7408  (0.4s)
+
+[Check 5 & 6] Gate B: greedy partial-node-hardening defense
+  delta = 0.4, 2000 FDI targets
+  This runs O(Nk × 55) full simulations per budget — takes ~10–20 min.
+
+  [Greedy Nk=10] Forward selection...
+  [Greedy Nk=10] done: selected=[13, 23, 7, 15, 12, 8, 3, 6, 4, 10], pa=0.5606, t=20s
+
+  [Greedy Nk=15] Forward selection...
+  [Greedy Nk=15] done: selected=[13, 23, 7, 15, 12, 8, 3, 6, 4, 10, 18, 14, 16, 51, 26], pa=0.5483, t=30s
+  [PASS] Gate B Nk=10 avg pa ∈ [0.50, 0.58] — achieved 0.5606
+  [PASS] Gate B Nk=15 avg pa ∈ [0.49, 0.57] — achieved 0.5483
+  [PASS] Gate B monotone: pa(Nk=15) ≤ pa(Nk=10) — 0.5483 ≤ 0.5606
+
+======================================================================
+Summary
+======================================================================
+  Gate A (no-ZTA avg pa):   0.7408  target=0.7474
+  Gate B Nk=10 avg pa:      0.5606  paper=0.5291
+  Gate B Nk=15 avg pa:      0.5483  paper=0.5094
+  Hardening delta:          0.4
+  Strength threshold:       0.3
+
+ALL CHECKS PASSED — Phase 0 baseline validated.
+======================================================================

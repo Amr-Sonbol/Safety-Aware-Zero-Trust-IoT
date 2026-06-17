@@ -1,0 +1,103 @@
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+numba cannot be imported and numba functions are disabled.
+Probably the execution is slow.
+Please install numba to gain a massive speedup.
+(or if you prefer slow execution, set the flag numba=False to avoid this warning!)
+======================================================================
+Phase 1 — Safety-Aware Decision Function: experiments
+======================================================================
+[build_H] M (measurements) = 41, N (states) = 29
+[build_H] rank(H) = 29
+[build_H] reactance spot-check OK: |H[2,0]| = 5.7571 == 1/x = 5.7571
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[build_A] shape=(41, 55), sensor nodes used=30
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[load_profile] source = synthetic daily curve (+/-15%); no CSV at data/nyiso_oct2022.csv
+
+[Exp1] B1 binary ZT
+  [Exp1_B1           ] M1=1.0000 M2=0.2926 M3=0.0207 M4=0.0016 M7_infl=1.000 M7_obs=0.03
+[Exp4] B3 naive multi-action
+  [Exp4_B3           ] M1=0.0000 M2=0.3267 M3=0.0492 M4=0.0016 M7_infl=1.000 M7_obs=0.03
+[Exp5] B4 security-only (alpha=1, beta=0)
+  [Exp5_B4           ] M1=1.0000 M2=0.4410 M3=0.0000 M4=0.0000 M7_infl=inf M7_obs=0.00
+[Exp6] Proposed (alpha=0.8, beta=0.2)
+  [Exp6_Proposed_a0.8_b0.2] M1=1.0000 M2=0.2869 M3=0.0197 M4=0.0000 M7_infl=1.000 M7_obs=0.03
+[Exp7] Proposed (alpha=0.5, beta=0.5)
+  [Exp7_Proposed_a0.5_b0.5] M1=0.0000 M2=0.1033 M3=0.1358 M4=0.0016 M7_infl=1.000 M7_obs=1.00
+[Exp8] Proposed (alpha=0.2, beta=0.8)
+  [Exp8_Proposed_a0.2_b0.8] M1=0.0000 M2=0.0000 M3=0.2875 M4=0.7414 M7_infl=1.000 M7_obs=1.00
+[Exp2] B2 FENG greedy Nk=10 (slow: O(Nk*55) sims)...
+  [Exp2_B2_Nk10      ] M1=1.0000 M2=0.0590 M3=0.2311 M4=0.4671 M7_infl=inf M7_obs=0.00
+[Exp3] B2 FENG greedy Nk=15 (slow: O(Nk*55) sims)...
+  [Exp3_B2_Nk15      ] M1=1.0000 M2=0.0933 M3=0.2062 M4=0.4068 M7_infl=inf M7_obs=0.00
+[build_H] M (measurements) = 41, N (states) = 29
+[build_H] rank(H) = 29
+[build_H] reactance spot-check OK: |H[2,0]| = 5.7571 == 1/x = 5.7571
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[build_A] shape=(41, 55), sensor nodes used=30
+[build_B] nodes=55, edges=83, mean degree=3.02, max degree=5
+[load_profile] source = synthetic daily curve (+/-15%); no CSV at data/nyiso_oct2022.csv
+
+[Ablations]
+  ABL-4 (B 5% edge toggle): proposed M4 0.0016 -> 0.0016 (Δ=0.00 pp; within ±5pp target)
+  ABL-4 note: R_d is synthetic (Assumption A2); redundancy sensitivity is structural, not validated — a real Fig.5 A would change R_d.
+  ABL-2 (process-state P contribution):
+    alpha=0.8 beta=0.2: Normal=deny Degraded=deny Emergency=deny  (no change)
+    alpha=0.5 beta=0.5: Normal=read_only Degraded=read_only Emergency=deny  (P changes the decision)
+    alpha=0.2 beta=0.8: Normal=full Degraded=full Emergency=restricted  (P changes the decision)
+  ABL-1 (S_deny weight sensitivity, +-50% per weight):
+    max relative move: M1=0.0%, M2=8.9%, M3=9.7%, M4=0.0%  => robust (<10%)
+  ABL-3 (gamma/delta +-20%): action ranking preserved by construction (objective terms monotone in these coefficients).
+
+======================================================================
+Milestone 2 — trade-off table (proposed vs baselines)
+======================================================================
+experiment                        M1      M2      M3      M4   M7infl  M7obs
+Exp1_B1                       1.0000  0.2926  0.0207  0.0016   1.000   0.03
+Exp4_B3                       0.0000  0.3267  0.0492  0.0016   1.000   0.03
+Exp5_B4                       1.0000  0.4410  0.0000  0.0000     inf   0.00
+Exp6_Proposed_a0.8_b0.2       1.0000  0.2869  0.0197  0.0000   1.000   0.03
+Exp7_Proposed_a0.5_b0.5       0.0000  0.1033  0.1358  0.0016   1.000   1.00
+Exp8_Proposed_a0.2_b0.8       0.0000  0.0000  0.2875  0.7414   1.000   1.00
+Exp2_B2_Nk10                  1.0000  0.0590  0.2311  0.4671     inf   0.00
+Exp3_B2_Nk15                  1.0000  0.0933  0.2062  0.4068     inf   0.00
+
+  Reference: Exp2_B2_Nk10  M1=1.0000  M2=0.0590  M4=0.4671  M7obs=0.00
+  Note: B2 M7=inf/obs=0 — greedy hardens sensor nodes, drops their rows from H_obs, blinds the EMS. This is the safety cost B2 ignores.
+
+  Exp6_Proposed_a0.8_b0.2:
+    M1=1.0000 < 1.0000? N  M2=0.2869 < 0.0590? N  M4 BELOW ±10% (-100.0%)? N
+    M7obs=0.03 vs B2 M7obs=0.00  => no
+  Exp7_Proposed_a0.5_b0.5:
+    M1=0.0000 < 1.0000? Y  M2=0.1033 < 0.0590? N  M4 BELOW ±10% (-99.7%)? N
+    M7obs=1.00 vs B2 M7obs=0.00  => no
+  Exp8_Proposed_a0.2_b0.8:
+    M1=0.0000 < 1.0000? Y  M2=0.0000 < 0.0590? Y  M4 ABOVE ±10% (+58.7%)? N
+    M7obs=1.00 vs B2 M7obs=0.00  => no
+
+[Milestone 2] Strict gate not met (no config satisfies all three conditions).
+
+  Key finding (Phase 1b — the safety-aware sweet spot):
+  - Proposed α=0.5 (balanced): M4=0.0016 (vs B2 0.4671), M7obs=1.00, M1=0.00.
+    It RESTRICTS (read_only) rather than denies, so it stops nearly all
+    FDI while keeping the EMS fully sighted — the trade-off B2/B4 cannot make.
+
+  Trade-off gradient (security ↔ safety, via α):
+    α=0.8 (security-dominant): over-denies → M7obs≈0 (EMS blinded, like B2/B4)
+    α=0.5 (balanced):          M4≈0 AND M7obs=1.0 — the headline result
+    α=0.2 (safety-dominant):   keeps nodes full → pa at ceiling, zero denial cost
+    B2 (FENG greedy):          comparable security, M7=inf (EMS blinded)
+
+  Narrative: a trade-off (balance preserves visibility while collapsing pa) —
+  NOT 'beats FENG on security'. The independent M7 axis is what distinguishes them.
